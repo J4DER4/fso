@@ -1,0 +1,21 @@
+# fly.toml app configuration file generated for bonjovidingus on 2025-08-28T23:00:47+03:00
+#
+# See https://fly.io/docs/reference/configuration/ for information about how to use this file.
+#
+
+app = 'bonjovidingus'
+primary_region = 'arn'
+
+[build]
+[env]
+PORT = "3001"
+[http_service]
+  internal_port = 3001
+  force_https = true
+  auto_stop_machines = 'stop'
+  auto_start_machines = true
+  min_machines_running = 0
+  processes = ['app']
+
+[[vm]]
+  size = 'shared-cpu-1x'
