@@ -3,9 +3,18 @@ const express = require('express')
 const morgan = require('morgan')
 const Contact = require('./models/contact.js')
 
-
 const app = express()
 const PORT = process.env.PORT
+
+const errorHandler = (error, request, response, next) => {
+    console.log(error.message)
+    if (error.name === 'CastError') {
+        return response.status(400).send({ error: 'malformed id' })
+    } else if (error.name === 'ValidationError') {
+        return response.status(400).send({ error: error.message })
+    }
+    next(error)
+}
 
 app.use(express.json())
 app.use(express.static('dist'))
@@ -31,28 +40,43 @@ app.get('/api/persons/:id', (request, response) => {
 })
 
 app.get('/info', (request, response) => {
-    const amount = "Undefined"
-    const date = new Date()
-    console.log('got info GET request')
-    response.send(
-        '<p> Phonebook has info for ' + amount + ' people </p>' +
-        '<p>' + date.toLocaleString('en-FI') + '</p>'
-    )
+    Contact.find().countDocuments()
+        .then(amount => {
+            const date = new Date()
+            console.log('got info GET request')
+            response.send(
+                '<p> Phonebook has info for ' + amount + ' people </p>' +
+                '<p>' + date.toLocaleString('en-FI') + '</p>'
+            )
+        })
+
 })
 
-app.delete('/api/persons/:id', (request, response) => {
+app.delete('/api/persons/:id', (request, response, next) => {
     const id = request.params.id
-
-    persons = persons.filter(p => p.id !== id)
-
-    console.log('Deleted person with ID:', id)
-
-    response
-        .status(204)
-
+    Contact.findByIdAndDelete(id)
+        .then(result => {
+            response.status(204).end()
+        })
+        .catch(err => next(err))
 })
 
-app.post('/api/persons', (request, response) => {
+app.put('/api/persons/:id', (request, response, next) => {
+    const id = request.params.id
+    const values = request.body
+    const opts = { returnDocument: 'after' } //returns the object after update (default: 'before')
+
+    Contact.findByIdAndUpdate(id, values, opts)
+        .then(updatedPerson => {
+            console.log(updatedPerson)
+            response.json(updatedPerson)
+        })
+        .catch(error => {
+            next(error)
+        })
+})
+
+app.post('/api/persons', (request, response, next) => {
 
     const body = request.body
     if (!body.number) {
@@ -66,27 +90,25 @@ app.post('/api/persons', (request, response) => {
         })
     }
 
-    // const nameExist = persons.find(
-    //     p => p.name.toLowerCase() === body.name.toLowerCase())
-    // if (nameExist) {
-    //     return response.status(400).json({
-    //         error: 'Name already in use!'
-    //     })
-    // }
-
     const person = new Contact({
         name: body.name,
         number: body.number,
     })
 
-    person.save().then(savedContact => {
-        console.log('added person:', JSON.stringify(savedContact))
-        response.json(person)
-    })
+    person.save()
+        .then(savedContact => {
+            console.log('added person:', JSON.stringify(savedContact))
+            response.json(person)
+        })
+        .catch(error => {
+            next(error)
+        })
+
 })
 
 app.use(unknownEndpoint)
-app.listen(PORT, () => {
+app.use(errorHandler)
 
+app.listen(PORT, () => {
     console.log('Server running on port:' + PORT + ' TIME: ' + Date.now())
 })

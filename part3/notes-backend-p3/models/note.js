@@ -6,20 +6,24 @@ const url = process.env.MONGODB_URI
 console.log('Connecting to:', url)
 
 mongoose.connect(url)
-    .then(result => {
+    .then(result =>{
         console.log('Connection established')
     })
-    .catch(error => {
+    .catch(error =>{
         console.log('Error during connection:', error.message)
     })
 
 const noteSchema = new mongoose.Schema({
-    content: String,
+    content: {
+        type: String,
+        minLength: 5,
+        required: true
+    },
     important: Boolean,
 })
 
 noteSchema.set('toJSON', {
-    transform: (document, returnedObject) => {
+    transform: (_document, returnedObject) =>{
         returnedObject.id = returnedObject._id.toString()
         delete returnedObject._id
         delete returnedObject.__v
