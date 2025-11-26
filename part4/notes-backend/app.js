@@ -24,6 +24,5 @@ app.use(middleware.requestLogger)
 app.use('/api/notes', notesRouter)
 
 app.use(middleware.errorHandler)
-app.use(middleware.errorHandler)
 
 module.exports = app
