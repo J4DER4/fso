@@ -113,3 +113,93 @@ describe('favouriteBlog', () => {
 
 })
 
+describe('Author with most blogs (mostBlogs)', () => {
+    const mostBlogs = listHelper.mostBlogs
+
+    test('of empty list return is zero', () => {
+        assert.deepStrictEqual(mostBlogs([]), 0)
+    })
+
+    test('when list has only one blog equals the blog', () => {
+        const blog1 = [
+            {
+                name: 'test1',
+                likes: 3
+            }
+        ]
+        const answ = {
+            author: 'test1',
+            blogs: 1
+        }
+        assert.deepStrictEqual(mostBlogs(blog1), answ)
+    })
+
+    test('many blogs', () => {
+        const blogs = [
+            {
+                name: 'test2',
+                likes: 3
+            },
+            {
+                name: 'test1',
+                likes: 4
+            },
+            {
+                name: 'test1',
+                likes: 3
+            },
+
+        ]
+        const answ = {
+            author: 'test1',
+            blogs: 2
+        }
+        assert.deepStrictEqual(mostBlogs(blogs), answ)
+    })
+})
+
+describe('Author with most likes (mostLikes)', () => {
+    const mostLikes = listHelper.mostLikes
+
+    test('of empty list return is zero', () => {
+        assert.deepStrictEqual(mostLikes([]), 0)
+    })
+
+    test('when list has only one blog equals the blog', () => {
+        const blog1 = [
+            {
+                name: 'test1',
+                likes: 3
+            }
+        ]
+        const answ = {
+            author: 'test1',
+            likes: 3
+        }
+        assert.deepStrictEqual(mostLikes(blog1), answ)
+    })
+
+    test('many blogs', () => {
+        const blogs = [
+            {
+                name: 'test2',
+                likes: 5
+            },
+            {
+                name: 'test1',
+                likes: 4
+            },
+            {
+                name: 'test1',
+                likes: 3
+            },
+
+        ]
+        const answ = {
+            author: 'test1',
+            likes: 7
+        }
+        assert.deepStrictEqual(mostLikes(blogs), answ)
+    })
+
+})
