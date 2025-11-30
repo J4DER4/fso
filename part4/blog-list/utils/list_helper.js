@@ -29,6 +29,7 @@ const mostBlogs = (blogs) => { //return the author that has most blogs
     if (blogs.length === 0) {
         return 0
     }
+
     //native js version
     // const counts = blogs.reduce((acc, blog) => {
     //     acc[blog.name] = (acc[blog.name] || 0) + 1
@@ -43,6 +44,7 @@ const mostBlogs = (blogs) => { //return the author that has most blogs
 
     //Lodash version
     const { countBy, maxBy, toPairs, groupBy } = require('lodash')
+
     const authorCounts = countBy(blogs, 'name')
     const mostBlogsEntry = maxBy(toPairs(authorCounts), ([author, blogs]) => blogs)
 
@@ -63,7 +65,6 @@ const mostLikes = (blogs) => {
         likes: sumBy(authorBlogs, 'likes')
     }))
     return maxBy(authorLikes, 'likes')
-
 }
 
 module.exports = {

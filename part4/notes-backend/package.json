@@ -7,16 +7,14 @@
 	"type": "commonjs",
 	"main": "index.js",
 	"scripts": {
-		"test": "node --test",
-		"start": "node index.js",
-		"dev": "node --watch index.js",
+		"start": "cross-env NODE_ENV=production node index.js",
+		"test": "cross-env NODE_ENV=test node --test",
+		"dev": "cross-env NODE_ENV=development node --watch index.js",
 		"build:ui": "rm -rf dist && cd ../Notes-front-p3/ && npm run build && cp -r dist ../notes-backend-p3/",
-		"deploy": "~/.fly/bin/fly deploy",
-		"deploy:full": "npm rum build:ui && npm run deploy",
-		"logs:prod": "fly logs",
-        "lint": "eslint ."
+		"lint": "eslint ."
 	},
 	"dependencies": {
+		"cross-env": "^10.1.0",
 		"dotenv": "^17.2.2",
 		"express": "^5.1.0",
 		"mongoose": "^8.18.0",
