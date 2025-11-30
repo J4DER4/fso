@@ -15,6 +15,7 @@ export default [
             '@stylistic/js/semi': ['error', 'never'],
             eqeqeq: 'error',
             'no-trailing-spaces': 'error',
+            'no-unused-vars': 'warn',
             'object-curly-spacing': ['error', 'always'],
             'no-console': 'off',
         },
